@@ -436,7 +436,10 @@ def chart_pie(counts):
         hovertemplate="<b>%{label}</b><br>%{value}<br>%{percent}<extra></extra>"))
     fig.update_layout(paper_bgcolor=PBG, font=FNT, height=350,
                       margin=dict(l=8,r=8,t=28,b=8),
-                      legend=dict(**LEG, font=dict(color="#b0c4ee",size=9)),
+                      legend=dict(bgcolor="rgba(7,11,30,.9)",
+                                  bordercolor="rgba(79,139,249,.25)",
+                                  borderwidth=1,
+                                  font=dict(color="#b0c4ee",size=9)),
                       title=dict(text="Traffic Label Distribution",
                                  font=dict(color="#c8d8ff",size=13), x=.01))
     return fig
@@ -491,7 +494,11 @@ def chart_training(df):
     fig.update_layout(
         paper_bgcolor=PBG, plot_bgcolor=PLT, font=FNT, hoverlabel=HOV,
         height=350, margin=dict(l=44,r=28,t=48,b=36),
-        legend=dict(**LEG, orientation="h", y=-.22, x=.5, xanchor="center"))
+        legend=dict(bgcolor="rgba(7,11,30,.9)",
+                    bordercolor="rgba(79,139,249,.25)",
+                    borderwidth=1,
+                    font=dict(color="#b0c4ee",size=11),
+                    orientation="h", y=-.22, x=.5, xanchor="center"))
     fig.update_xaxes(**GRD)
     fig.update_yaxes(**GRD)
     return fig
@@ -637,7 +644,11 @@ def chart_bench_radar(metrics, models):
         title=dict(text="Multi-Model Performance Radar",
                    font=dict(color="#c8d8ff",size=13),x=.01),
         font=dict(family="Inter"),height=430,
-        legend=dict(**LEG,x=1.04))
+        legend=dict(bgcolor="rgba(7,11,30,.9)",
+                    bordercolor="rgba(79,139,249,.25)",
+                    borderwidth=1,
+                    font=dict(color="#b0c4ee",size=11),
+                    x=1.04))
     return fig
 
 
