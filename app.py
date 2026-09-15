@@ -102,25 +102,51 @@ html,body,[class*="css"]{font-family:'Inter',sans-serif!important}
   border-right:1px solid rgba(79,139,249,.2)!important;
 }
 [data-testid="stSidebar"]>div{background:transparent!important;padding-top:0!important}
+[data-testid="stSidebar"] *{color:#c8d8ff!important}
 
-/* hide ALL radio circles and labels */
-[data-testid="stSidebar"] .stRadio>label{display:none!important}
-[data-testid="stSidebar"] .stRadio label[data-baseweb="radio"]>div:first-child{display:none!important}
-[data-testid="stSidebar"] .stRadio label[data-baseweb="radio"]{
-  background:transparent!important;border:none!important;border-radius:10px!important;
-  padding:9px 16px!important;margin:1px 0!important;width:100%!important;
-  cursor:pointer!important;transition:all .18s!important;
-  font-size:.86rem!important;font-weight:500!important;
-  color:rgba(160,185,255,.6)!important;
-  display:flex!important;align-items:center!important;
+/* ── Hide the radio label text "\_" ── */
+[data-testid="stSidebar"] .stRadio > label { display:none !important; }
+
+/* ── Hide the radio circle dot ── */
+[data-testid="stSidebar"] .stRadio label[data-baseweb="radio"] > div:first-child {
+  display:none !important;
 }
-[data-testid="stSidebar"] .stRadio label[data-baseweb="radio"]:hover{
-  background:rgba(79,139,249,.14)!important;color:#fff!important;
+
+/* ── Each nav item ── */
+[data-testid="stSidebar"] .stRadio div[role="radiogroup"] {
+  display:flex; flex-direction:column; gap:2px; padding:0 8px;
 }
-[data-testid="stSidebar"] .stRadio label[aria-checked="true"]{
-  background:linear-gradient(135deg,rgba(79,139,249,.28),rgba(124,77,255,.18))!important;
-  border-left:3px solid #4F8BF9!important;color:#fff!important;
-  box-shadow:0 0 14px rgba(79,139,249,.22)!important;
+[data-testid="stSidebar"] .stRadio label[data-baseweb="radio"] {
+  background:transparent !important;
+  border:none !important;
+  border-left: 3px solid transparent !important;
+  border-radius:10px !important;
+  padding:10px 14px !important;
+  margin:1px 0 !important;
+  width:100% !important;
+  cursor:pointer !important;
+  transition:all .18s ease !important;
+  font-size:.86rem !important;
+  font-weight:500 !important;
+  color:rgba(160,185,255,.6) !important;
+  display:flex !important;
+  align-items:center !important;
+}
+[data-testid="stSidebar"] .stRadio label[data-baseweb="radio"]:hover {
+  background:rgba(79,139,249,.13) !important;
+  color:#fff !important;
+  border-left:3px solid rgba(79,139,249,.5) !important;
+}
+[data-testid="stSidebar"] .stRadio label[aria-checked="true"] {
+  background:linear-gradient(135deg,rgba(79,139,249,.28),rgba(124,77,255,.18)) !important;
+  border-left:3px solid #4F8BF9 !important;
+  color:#fff !important;
+  font-weight:600 !important;
+  box-shadow:0 0 14px rgba(79,139,249,.2) !important;
+}
+/* ── p tags inside radio labels ── */
+[data-testid="stSidebar"] .stRadio label p {
+  margin:0 !important; color:inherit !important; font-size:inherit !important;
 }
 [data-testid="stSidebar"] *{color:#c8d8ff!important}
 
@@ -253,20 +279,17 @@ hr{border:none!important;height:1px!important;
 #  SIDEBAR — uses session_state, no radio tricks needed
 # ══════════════════════════════════════════════════════════════
 NAV = [
-    ("📊","Dashboard"),
-    ("📂","Data Ingestion"),
-    ("🧠","Model Training"),
-    ("🔮","Attack Prediction"),
-    ("🗺️","MITRE ATT&CK"),
-    ("💡","Explainability"),
-    ("📈","Benchmark"),
-    ("⚙️","Settings"),
+    "📊  Dashboard",
+    "📂  Data Ingestion",
+    "🧠  Model Training",
+    "🔮  Attack Prediction",
+    "🗺️  MITRE ATT&CK",
+    "💡  Explainability",
+    "📈  Benchmark",
+    "⚙️  Settings",
 ]
 
 def render_sidebar():
-    if "page" not in st.session_state:
-        st.session_state.page = "Dashboard"
-
     with st.sidebar:
         st.markdown("""
 <div style="padding:20px 14px 12px;text-align:center">
@@ -283,26 +306,8 @@ def render_sidebar():
             letter-spacing:2px;padding:0 14px 6px">Navigation</div>
 """, unsafe_allow_html=True)
 
-        for icon, name in NAV:
-            active = st.session_state.page == name
-            bg     = "linear-gradient(135deg,rgba(79,139,249,.28),rgba(124,77,255,.18))" if active else "transparent"
-            bl     = "border-left:3px solid #4F8BF9;" if active else "border-left:3px solid transparent;"
-            color  = "#ffffff" if active else "rgba(160,185,255,.62)"
-            shadow = "box-shadow:0 0 14px rgba(79,139,249,.22);" if active else ""
-            st.markdown(
-                f"<div style='background:{bg};{bl}{shadow}border-radius:10px;"
-                f"padding:10px 14px;margin:1px 0;cursor:pointer;transition:all .18s;"
-                f"font-size:.86rem;font-weight:{'600' if active else '500'};color:{color};'>"
-                f"{icon}&nbsp;&nbsp;{name}</div>",
-                unsafe_allow_html=True,
-            )
-            if st.button(f"{icon} {name}", key=f"nav_{name}",
-                         use_container_width=True,
-                         help=f"Go to {name}"):
-                st.session_state.page = name
-                st.rerun()
+        sel = st.radio("_", NAV, label_visibility="collapsed")
 
-        # Model status
         ms = get_model_status()
         st.markdown(f"""
 <div style="background:rgba(79,139,249,.055);border:1px solid rgba(79,139,249,.15);
@@ -323,7 +328,8 @@ def render_sidebar():
             color:rgba(160,185,255,.2);letter-spacing:1px">SIH 2024 · NTRO CHALLENGE</div>
 """, unsafe_allow_html=True)
 
-    return st.session_state.page
+    # Strip emoji prefix to get clean page name
+    return sel.split("  ", 1)[1].strip() if "  " in sel else sel.strip()
 
 
 # ══════════════════════════════════════════════════════════════
